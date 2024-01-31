@@ -1,28 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Speech Text Reader</title>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Speech Text Reader</h1>
-      <button id="toggle" class="btn btn-toggle">
-        Toggle Text Box
-      </button>
-      <div id="text-box" class="text-box">
-        <div id="close" class="close">X</div>
-        <h3>Choose Voice</h3>
-        <select id="voices"></select>
-        <textarea id="text" placeholder="Enter text to read..."></textarea>
-        <button class="btn" id="read">Read Text</button>
-      </div>
-      <main></main>
-    </div>
 
-    <script src="script.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+
+  <style>
+    body {
+      background: #141414;
+    }
+    img{
+      height: 55%;
+      width: 30%;
+      margin-top: 80px;
+      border-radius: 50%;
+    }
+  </style>
+
+  <title>Text To Speech</title>
+</head>
+
+<body class="text-white">
+  <div class="container text-center">
+    <img src="img/tts.png" alt="" class="mb-5">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <form class="mb-5">
+          <div class="form-group">
+            <textarea name="" id="text-input" class="form-control form-control-lg" placeholder="Type anything..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="rate">Rate</label>
+            <div id="rate-value" class="badge badge-primary float-right">1</div>
+            <input type="range" id="rate" class="custom-range" min="0.5" max="2" value="1" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="pitch">Pitch</label>
+            <div id="pitch-value" class="badge badge-primary float-right">1</div>
+            <input type="range" id="pitch" class="custom-range" min="0" max="2" value="1" step="0.1">
+          </div>
+          <div class="form-group">
+            <select id="voice-select" class="form-control form-control-lg"></select>
+          </div>
+          <button class="btn btn-light btn-lg btn-block">Speak It</button>
+        </form>
+         
+        <p class="text-secondary"> Note: This app uses the Web Speech API which is experimental and may not fully work in some versions of certain browsers</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+
+<script src="script.js"></script>
+</body>
+
 </html>

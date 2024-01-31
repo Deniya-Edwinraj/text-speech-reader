@@ -1,142 +1,75 @@
-const main = document.querySelector('main');
-const voicesSelect = document.getElementById('voices');
-const textarea = document.getElementById('text');
-const readBtn = document.getElementById('read');
-const toggleBtn = document.getElementById('toggle');
-const closeBtn = document.getElementById('close');
+// DOM Elements
+const textForm = document.querySelector('form');
+const textInput = document.querySelector('#text-input');
+const voiceSelect = document.querySelector('#voice-select');
+const rate = document.querySelector('#rate');
+const rateValue = document.querySelector('#rate-value');
+const pitch = document.querySelector('#pitch');
+const pitchValue = document.querySelector('#pitch-value');
+const body = document.querySelector('body');
 
-const data = [
-  {
-    image: './img/drink.jpg',
-    text: "I'm Thirsty"
-  },
-  {
-    image: './img/food.jpg',
-    text: "I'm Hungry"
-  },
-  {
-    image: './img/tired.jpg',
-    text: "I'm Tired"
-  },
-  {
-    image: './img/hurt.jpg',
-    text: "I'm Hurt"
-  },
-  {
-    image: './img/happy.jpg',
-    text: "I'm Happy"
-  },
-  {
-    image: './img/angry.jpg',
-    text: "I'm Angry"
-  },
-  {
-    image: './img/sad.jpg',
-    text: "I'm Sad"
-  },
-  {
-    image: './img/scared.jpg',
-    text: "I'm Scared"
-  },
-  {
-    image: './img/outside.jpg',
-    text: 'I Want To Go Outside'
-  },
-  {
-    image: './img/home.jpg',
-    text: 'I Want To Go Home'
-  },
-  {
-    image: './img/school.jpg',
-    text: 'I Want To Go To School'
-  },
-  {
-    image: './img/grandma.jpg',
-    text: 'I Want To Go To Grandmas'
-  }
+// Manual array of voices with languages
+const voices = [
+  { name: 'US English Female', lang: 'en-US' },
+  { name: 'UK English Female', lang: 'en-GB' },
+  // Add more voices as needed
 ];
 
-data.forEach(createBox);
-
-// Create speech boxes
-function createBox(item) {
-  const box = document.createElement('div');
-
-  const { image, text } = item;
-
-  box.classList.add('box');
-
-  box.innerHTML = `
-    <img src="${image}" alt="${text}" />
-    <p class="info">${text}</p>
-  `;
-
-  box.addEventListener('click', () => {
-    setTextMessage(text);
-    speakText();
-
-    // Add active effect
-    box.classList.add('active');
-    setTimeout(() => box.classList.remove('active'), 800);
-  });
-
-  main.appendChild(box);
-}
-
-// Init speech synth
-const message = new SpeechSynthesisUtterance();
-
-// Store voices
-let voices = [];
-
-function getVoices() {
-  voices = speechSynthesis.getVoices();
-
-  voices.forEach(voice => {
-    const option = document.createElement('option');
-
-    option.value = voice.name;
-    option.innerText = `${voice.name} ${voice.lang}`;
-
-    voicesSelect.appendChild(option);
-  });
-}
-
-// Set text
-function setTextMessage(text) {
-  message.text = text;
-}
-
-// Speak text
-function speakText() {
-  speechSynthesis.speak(message);
-}
-
-// Set voice
-function setVoice(e) {
-  message.voice = voices.find(voice => voice.name === e.target.value);
-}
-
-// Voices changed
-speechSynthesis.addEventListener('voiceschanged', getVoices);
-
-// Toggle text box
-toggleBtn.addEventListener('click', () =>
-  document.getElementById('text-box').classList.toggle('show')
-);
-
-// Close button
-closeBtn.addEventListener('click', () =>
-  document.getElementById('text-box').classList.remove('show')
-);
-
-// Change voice
-voicesSelect.addEventListener('change', setVoice);
-
-// Read text button
-readBtn.addEventListener('click', () => {
-  setTextMessage(textarea.value);
-  speakText();
+// Fill the voice select dropdown
+voices.forEach(voice => {
+  const option = document.createElement('option');
+  option.textContent = voice.name + '(' + voice.lang + ')';
+  option.setAttribute('data-lang', voice.lang);
+  option.setAttribute('data-name', voice.name);
+  voiceSelect.appendChild(option);
 });
 
-getVoices();
+// Speak
+const speak = () => {
+  if (textInput.value !== '') {
+    // Add background animation
+    body.style.background = '#141414 url(img/wave.gif)';
+    body.style.backgroundRepeat = 'repeat-x';
+    body.style.backgroundSize = '100% 100%';
+
+    // Get selected voice
+    const selectedVoice = voiceSelect.selectedOptions[0].getAttribute('data-name');
+
+    // Set pitch and rate
+    const options = {
+      rate: rate.value,
+      pitch: pitch.value,
+      onend: () => {
+        console.log('Done speaking...');
+        body.style.background = '#141414';
+      },
+      onerror: () => {
+        console.error('Something went wrong');
+      },
+    };
+
+    // Find the selected voice
+    const selectedVoiceObj = voices.find(voice => voice.name === selectedVoice);
+
+    // Speak using responsivevoice.js
+    responsiveVoice.speak(textInput.value, selectedVoiceObj.lang, options);
+  }
+};
+
+// EVENT LISTENERS
+
+// Text form submit
+textForm.addEventListener('submit', e => {
+  e.preventDefault();
+  speak();
+  textInput.blur();
+});
+
+// Rate value change
+rate.addEventListener('change', e => (rateValue.textContent = rate.value));
+
+// Pitch value change
+pitch.addEventListener('change', e => (pitchValue.textContent = pitch.value));
+
+// Voice select change
+voiceSelect.addEventListener('change', e => speak());
